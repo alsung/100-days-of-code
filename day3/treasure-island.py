@@ -20,20 +20,20 @@ ____/______/______/______/__"=._o--._   ;o|o;     _._;o;____/______/______/____
 ____/______/______/______/______/_____"=.o|o_.--""___/______/______/______/____
 /______/______/______/______/______/______/______/______/______/______/_____ /
 *******************************************************************************
-''')
+''') # to print multiple lines, use ''' '''
 print("Welcome to Treasure Island.")
 print("Your mission is to find the treasure.") 
 
 choice1 = input("You're at a cross road. Where do you want to go? Type \"left\" or \"right\"\n")
-if choice1 == "left":
+if choice1.lower() == "left":
     choice2 = input("You come to a lake. There is an island in the middle of the lake. Type \"wait\" to wait for a boat. Type \"swim\" to swim across.\n")
-    if choice2 == "wait":
+    if choice2.lower() == "wait":
         choice3 = input("You arrive at the island unharmed. There is a house with 3 doors. One red, one yellow, and one blue. Which color do you choose?\n")
-        if choice3 == "blue":
+        if choice3.lower() == "blue":
             print("You enter a room of beasts. Game Over.")
-        elif choice3 == "red": 
+        elif choice3.lower() == "red": 
             print("You enter a room of fire and get burned by fire. Game Over.")
-        elif choice3 == "yellow":
+        elif choice3.lower() == "yellow":
             print("Congratulations! You found the treasure! You Win!")
         else: 
             print("You fall into a booby trap. Game Over.")
