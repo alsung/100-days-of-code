@@ -1,4 +1,5 @@
 # Day 10.2 Calculator 
+from art import logo
 
 # Add
 def add(n1, n2):
@@ -24,12 +25,25 @@ operations = {
     "/": divide,
 }
 
-num1 = int(input("What is the first number?: "))
-for symbol in operations:
-    print(symbol)
-operation_symbol = input("Pick an operation from the line above: ")
-num2 = int(input("What is the second number?: "))
-calculation_function = operations[operation_symbol]
-result = calculation_function(num1, num2)
+def calculator():
+    print(logo)
+    num1 = float(input("What is the first number?: "))
+    for symbol in operations:
+        print(symbol)
+    should_continue = True
 
-print(f"{num1} {operation_symbol} {num2} = {result}")
+    while should_continue:
+        operation_symbol = input("Pick an operation from the line above: ")
+        num2 = float(input("What is the second number?: "))
+        calculation_function = operations[operation_symbol]
+        answer = calculation_function(num1, num2)
+
+        print(f"{num1} {operation_symbol} {num2} = {answer}")
+
+        if input(f"Type 'y' to continue calculating with {answer}. Type 'n' to start a new calculation.: ") == 'y':
+            num1 = answer
+        else:
+            should_continue = False
+            calculator()
+
+calculator()
