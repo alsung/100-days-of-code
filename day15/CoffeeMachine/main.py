@@ -1,3 +1,5 @@
+# Day 15 Coffee Machine
+
 MENU = {
     "espresso": {
         "ingredients": {
@@ -30,76 +32,67 @@ resources = {
     "coffee": 100,
 }
 
-machine_money = 0
+drinks = ["espresso", "latte", "cappuccino"]
 
-# TODO: Prompt user asking "What would you like? (espresso/latte/cappucino): "
-    # Check user's input
-    # Prompt should show every time action has completed, e.g. once drink is 
-        # dispensed. Show again to serve next customer. 
+profit = 0
+is_on = True
 
-selection = input("What would you like? (espresso/latte/cappuccino): ")
+def is_resource_sufficient(order_ingredients):
+    """Returns True when order can be made, False if ingredients are insufficient."""
+    for item in order_ingredients:
+        if resources[item] <= order_ingredients[item]:
+            print(f"Sorry there is not enough {item}.")
+            return False
+    return True
 
+def process_coins():
+    """Returns the total calculated from coins inserted."""
+    print("Please insert coins.")
+    total = int(input("How many quarters?: ")) * 0.25
+    total += int(input("How many dimes?: ")) * 0.10
+    total += int(input("How many nickets?: ")) * 0.05
+    total += int(input("How many pennies?: ")) * 0.01
+    return total
 
-# TODO 2: Turn off machine by entering "off" to prompt
-    # Code should end execution 
+def is_transaction_successful(money_received, drink_cost):
+    """Return True when the payment is accepted, or False if money is insufficient."""
+    if money_received > drink_cost:
+        change = round(money_received - drink_cost, 2)
+        print(f"Here is ${change} in change.")
+        global profit
+        profit += drink_cost
+        return True
+    else:
+        print("Sorry, that's not enough money. Money refunded.")
+        return False
 
-if selection == "off":
-    print("Goodbye!")
-    quit()
+def make_coffee(drink_name, order_ingredients):
+    """Deduct the required ingredients from the resources."""
+    for item in order_ingredients:
+        resources[item] -= order_ingredients[item]
+    print(f"Here is your {drink_name}. Enjoy!")
 
-# TODO 3: Print report
-    # When user enters 'report' to prompt, report should show current resource
-        # levels. 
-        # Water: 100ml
-        # Milk: 50ml
-        # Coffee: 76g
-        # Money: $2.5
+while is_on:
+    choice = input("\n What would you like? (espresso/latte/cappuccino): ")
 
-elif selection == "report":
-    for res in resources:
-        print(f"{res.title()}: {resources[res]}")
-    print(f"Money: ${machine_money}")
+    if choice == "off":
+        print("Goodbye!")
+        is_on = False
 
-# TODO 4: Check resources sufficient?
-    # When user chooses drink, check if enough resources to make drink
-    # if Latte requires 200ml water but only 100ml left in machine, print 
-        # “​Sorry there is not enough water.​"
-    # Same should happen if another resource is depleted
+    elif choice == "report":
+        for res in resources:
+            print(f"{res.title()}: {resources[res]}")
+        print(f"Money: ${profit}")
 
-# TODO 5: Process coins
-    # If resources are sufficient to make drink, prompt user to insert coins
-    # Quarters = $0.25, Dimes = $0.10, Nickels = $0.05, Pennies = $0.01
-    # Calculate monetary value of coins inserted. E.g. 1 quarter, 2 dimes, 
-        # 1 nickel, 2 pennies = 0.25 + 0.1 x 2 + 0.05 + 0.01 x 2 = $0.52
+    elif choice in drinks:
+        drink = MENU[choice]
+        print(drink)
+        if is_resource_sufficient(drink["ingredients"]):
+            # process coins
+            payment = process_coins()
+            # check transaction successful
+            if is_transaction_successful(payment, drink["cost"]):
+                make_coffee(choice, drink["ingredients"])
 
-# TODO 6: Check transation successful
-    # Check user has inserted enough money to purchase selected drink
-    # e.g. Latte cost $2.50, but only inserted $0.52 then after counting 
-        # the coins, print "Sorry that's not enough money. Money refunded."
-    # If user has inserted enough money, then the cost of drink gets added to
-        # machine as profit and will be reflected next time report is triggered.
-        # e.g.: 
-            # Water: 100ml
-            # Milk: 50ml
-            # Coffee: 76g
-            # Money: $2.5
-    # If user inserted too much money, machine should offer change
-        # e.g. "Here is $2.45 dollars in change". Change rounded to 2 decimals
-
-# TODO 7: Make coffee
-    # If transaction successful and enough resources to make drink, then 
-        # ingredients to make drink should be deducted from resources
-
-        # e.g. report before purchasing latte:
-        # Water: 300ml
-        # Milk: 200ml
-        # Coffee: 100g
-        # Money: $0
-
-        # report after purchasing:
-        # Water: 100ml
-        # Milk: 50ml
-        # Coffee: 76g
-        # Money: $2.5
-
-    # Once resources deducted, tell user "Here is your latte. Enjoy!"
+    else:
+        print("Please choose a valid drink.")
